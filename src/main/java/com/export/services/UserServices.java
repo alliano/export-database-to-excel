@@ -16,12 +16,12 @@ public class UserServices {
 
     private final UserRepositories userRepo;
 
-    private final WriteExcel excel;
+    private final WriteExcel writeExcelFile;
 
     public UserServices(DataFaker dataFaker, UserRepositories userRepositories, WriteExcel excel){
         this.dataFaker = dataFaker;
         this.userRepo = userRepositories;
-        this.excel = excel;
+        this.writeExcelFile = excel;
         exportToExcel();
     }
 
@@ -33,7 +33,6 @@ public class UserServices {
         return this.userRepo.findAll();
     }
     public void exportToExcel(){
-        Iterable<User> users = findAll();
-        excel.dataUser(users);
+        writeExcelFile.dataUser(findAll());
     }
 }
