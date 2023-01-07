@@ -1,6 +1,8 @@
 package com.export.services;
 
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.export.domains.entities.User;
@@ -22,14 +24,23 @@ public class UserServices {
         this.dataFaker = dataFaker;
         this.userRepo = userRepositories;
         this.writeExcelFile = excel;
-        exportToExcel();
+        // exportToExcel();
+        generateFakeUser();
     }
 
-    public void generateFakeUser(){
-        this.userRepo.saveAll(this.dataFaker.userFake(500));
+
+
+    public void generateFakeUser() {
+        List<User> users = this.dataFaker.getUsers(500);
+        for (int i = 0; i < users.size(); i++) {
+            users.get(i).getRole().forEach( r -> System.out.println(r.getDescription()+"\n"));
+        }
+        this.userRepo.saveAll(users);
     }
 
-    public Iterable<User> findAll(){
+
+
+    public List<User> findAll(){
         return this.userRepo.findAll();
     }
     public void exportToExcel(){
