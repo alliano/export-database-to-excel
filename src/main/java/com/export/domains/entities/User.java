@@ -1,5 +1,6 @@
 package com.export.domains.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,9 @@ import lombok.Setter;
 @AllArgsConstructor @NoArgsConstructor
 @Entity @Setter @Getter
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -379856834756834L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

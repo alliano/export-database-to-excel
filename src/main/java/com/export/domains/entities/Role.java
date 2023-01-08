@@ -1,5 +1,7 @@
 package com.export.domains.entities;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor @NoArgsConstructor
 @Entity @Setter @Getter
 @Table(name = "role")
-public class Role {
+public class Role implements Serializable {
+
+    private static final long serialVersionUID = 372492376576347L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

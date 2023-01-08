@@ -24,26 +24,37 @@ public class UserServices {
         this.dataFaker = dataFaker;
         this.userRepo = userRepositories;
         this.writeExcelFile = excel;
-        // exportToExcel();
-        generateFakeUser();
+        exportToExcelDetailUser();
     }
 
-
-
+    /**
+     * method ini digunakan untuk mengenerate user palsu beserta role nya
+     * menggunkan bantukan liberaly dari Faker (com.github.javafaker.Faker)
+     */
     public void generateFakeUser() {
         List<User> users = this.dataFaker.getUsers(500);
-        for (int i = 0; i < users.size(); i++) {
-            users.get(i).getRole().forEach( r -> System.out.println(r.getDescription()+"\n"));
-        }
         this.userRepo.saveAll(users);
     }
 
-
-
+    /*
+     * method ini digunkan untuk mengquery atau menampilkan semua user
+     */
     public List<User> findAll(){
         return this.userRepo.findAll();
     }
+
+    /*
+     * method ini digunkan untuk mengekspor data yang berada didalam database menajadi file excel
+     */
     public void exportToExcel(){
         writeExcelFile.dataUser(findAll());
     }
+
+    /*
+     * methoid ini untuk mengeksport detail user
+     */
+    public void exportToExcelDetailUser(){
+        this.writeExcelFile.userDetails(this.userRepo.findAllUserDetail());
+    }
+
 }

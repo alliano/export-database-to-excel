@@ -14,15 +14,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.annotation.Configuration;
 
 import com.export.domains.entities.User;
+import com.export.dtos.UserDetailDto;
 
 @Configuration
 public class WriteExcel {
 
+    private XSSFWorkbook workbook = new XSSFWorkbook();
+
     public void dataUser(Iterable<User> users){
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet;
         int rowNum = 0;
-        sheet = workbook.createSheet("users");
+        XSSFSheet sheet = this.workbook.createSheet("users");
         for (User user : users) {
             rowNum++;
             Row row = sheet.createRow(rowNum);
@@ -52,13 +53,21 @@ public class WriteExcel {
                 cell4.setCellValue(user.getPassword());
             }
         }
-        try {
-            FileOutputStream fileOutput = new FileOutputStream(new File("test.xlsx"));
-            workbook.write(fileOutput);
-            fileOutput.close();
-            workbook.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    }
+
+    public void userDetails(List<UserDetailDto> users) {
+
+        // XSSFSheet sheet = this.workbook.createSheet("user details");
+        for (int i = 0; i < users.size(); i++) {
+            System.out.println(users.size());
         }
+
+    }
+
+    public void execute() throws IOException {
+        FileOutputStream fileOutput = new FileOutputStream(new File("test.xlsx"));
+        this.workbook.write(fileOutput);
+        fileOutput.close();
+        this.workbook.close();
     }
 }
