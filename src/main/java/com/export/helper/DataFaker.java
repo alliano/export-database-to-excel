@@ -2,7 +2,7 @@ package com.export.helper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 import org.springframework.context.annotation.Configuration;
 
@@ -16,10 +16,10 @@ public class DataFaker {
     public List<User> getUsers(long size){
         List<User> users = new ArrayList<User>();
         Faker faker = new Faker();
-        AtomicInteger integer = new AtomicInteger();
         for (int i = 0; i < size; i++) {
             User user = new User();
-            user.setId(integer.incrementAndGet());
+            user.setId(i);
+            user.setSecureId(UUID.randomUUID().toString());
             user.setName(faker.name().name());
             user.setPassword(faker.code().asin());
             user.setEmail(faker.name().firstName()+"@gmail.com");

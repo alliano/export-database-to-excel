@@ -31,6 +31,9 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
+    @Column(nullable = false, unique = true)
+    private String secureId;
+
     @Column(length = 50, nullable = false, unique = false)
     private String email;
 

@@ -22,7 +22,9 @@ public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private int id;
+
+    // private String secureId;
 
     @Column(nullable = false)
     private String name;
