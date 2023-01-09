@@ -15,8 +15,10 @@ import com.export.dtos.UserDetailDto;
 import com.export.helper.DataFaker;
 import com.export.helper.WriteExcel;
 
+import lombok.AllArgsConstructor;
 
-@Service
+
+@Service @AllArgsConstructor
 public class UserServices {
 
     private final DataFaker dataFaker;
@@ -24,12 +26,6 @@ public class UserServices {
     private final UserRepositories userRepo;
 
     private final WriteExcel writeExcelFile;
-
-    public UserServices(DataFaker dataFaker, UserRepositories userRepositories, WriteExcel excel){
-        this.dataFaker = dataFaker;
-        this.userRepo = userRepositories;
-        this.writeExcelFile = excel;
-    }
 
     /**
      * method ini digunakan untuk mengenerate user palsu beserta role nya
@@ -67,8 +63,8 @@ public class UserServices {
      * methoid ini untuk mengeksport detail user
      */
     public ResponseEntity<?> exportToExcelDetailUser() {
-        this.writeExcelFile.userDetails(this.userRepo.findAllUserDetail());
         try {
+            this.writeExcelFile.userDetails(this.userRepo.findAllUserDetail());
             this.writeExcelFile.execute();
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IOException IOX) {
