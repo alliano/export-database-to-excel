@@ -1,8 +1,12 @@
 package com.export.services;
 
 
+import java.io.IOException;
 import java.util.List;
 
+import org.hibernate.QueryException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.export.domains.entities.User;
@@ -31,40 +35,46 @@ public class UserServices {
      * method ini digunakan untuk mengenerate user palsu beserta role nya
      * menggunkan bantukan liberaly dari Faker (com.github.javafaker.Faker)
      */
-    public void generateFakeUser(int size) {
+    public ResponseEntity<Void> generateFakeUser(int size) {
         List<User> users = this.dataFaker.getUsers(size);
-        for (User user : users) {
-            System.out.println("secure id : "+user.getSecureId());
-            System.out.println("name :"+user.getName());
-            System.out.println("email :"+user.getEmail());
-            System.out.println("password :"+user.getPassword());
-            System.out.println("role : "+user.getRole().get(0).getName());
-            System.out.println("description role :"+user.getRole().get(0).getDescription());
-            System.out.println("\n");
+        try {
+            this.userRepo.saveAll(users);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (QueryException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        this.userRepo.saveAll(users);
     }
 
     /*
      * method ini digunkan untuk mengquery atau menampilkan semua user
      */
-    public List<User> findAll(){
-        return this.userRepo.findAll();
+    public ResponseEntity<List<UserDetailDto>> findAllUserDetail(){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(this.userRepo.findAllUserDetail());
+        }catch(QueryException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     /*
      * method ini digunkan untuk mengekspor data yang berada didalam database menajadi file excel
      */
     public void exportToExcel(){
-        writeExcelFile.dataUser(findAll());
+        writeExcelFile.dataUser(this.userRepo.findAll());
     }
 
     /*
      * methoid ini untuk mengeksport detail user
      */
-    public List<UserDetailDto> exportToExcelDetailUser() {
-        return this.userRepo.findAllUserDetail();
-        // this.writeExcelFile.userDetails(this.userRepo.findAllUserDetail());
+    public ResponseEntity<?> exportToExcelDetailUser() {
+        this.writeExcelFile.userDetails(this.userRepo.findAllUserDetail());
+        try {
+            this.writeExcelFile.execute();
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (IOException IOX) {
+            IOX.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
 }
