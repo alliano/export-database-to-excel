@@ -67,6 +67,7 @@ public class WriteExcel {
     public void userDetails(List<UserDetailDto> users) {
 
         XSSFSheet sheet = (this.workbook.getSheet("user details") == null ? this.workbook.createSheet("user details") : this.workbook.getSheet("user details"));
+        SheetConditionalFormatting sheetCF = sheet.getSheetConditionalFormatting();
         for (int i = 0; i < users.size(); i++) {
 
             /*
@@ -111,30 +112,29 @@ public class WriteExcel {
                  * jika role name nya Admin maka warna cell nya Aqua
                  * jika role name nya User maka warna cell nya Merah
                  */
-                CellStyle cellStyle = cell5.getCellStyle();
-                cellStyle = cell5.getCellStyle();
-                SheetConditionalFormatting sheetCF = sheet.getSheetConditionalFormatting();
-                ConditionalFormattingRule rule1 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=Admin)");
-                ConditionalFormattingRule rule2 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=User)");
-                PatternFormatting fill1 = rule1.createPatternFormatting();
-                fill1.setFillBackgroundColor(IndexedColors.AQUA.index);
-                fill1.setFillPattern(PatternFormatting.BIG_SPOTS);
-                PatternFormatting fill2 = rule2.createPatternFormatting();
-                fill2.setFillBackgroundColor(IndexedColors.LIGHT_YELLOW.index);
-                fill2.setFillPattern(PatternFormatting.BIG_SPOTS);
-                CellRangeAddress[] regions = {
-                    CellRangeAddress.valueOf("A1:H1")
-                };
-                sheetCF.addConditionalFormatting(regions, rule1);
-                sheetCF.addConditionalFormatting(regions, rule2);
                 cell1.setCellValue(users.get(i).getSecureId());
                 cell2.setCellValue(users.get(i).getName());
                 cell3.setCellValue(users.get(i).getEmail());
                 cell4.setCellValue(users.get(i).getPassword());
                 cell5.setCellValue(users.get(i).getRoleNaname());
                 cell6.setCellValue(users.get(i).getRoleDescription());
-                cell5.setCellStyle(cellStyle);
             }
+            ConditionalFormattingRule rule1 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=Admin)");
+            ConditionalFormattingRule rule2 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=User)");
+            PatternFormatting fill1 = rule1.createPatternFormatting();
+            fill1.setFillBackgroundColor(IndexedColors.AQUA.index);
+            fill1.setFillPattern(PatternFormatting.BIG_SPOTS);
+            PatternFormatting fill2 = rule2.createPatternFormatting();
+            fill2.setFillBackgroundColor(IndexedColors.LIGHT_YELLOW.index);
+            fill2.setFillPattern(PatternFormatting.BIG_SPOTS);
+            CellRangeAddress[] regions = {
+                CellRangeAddress.valueOf("B1:G1")
+            };
+            sheetCF.addConditionalFormatting(regions, rule1);
+            sheetCF.addConditionalFormatting(regions, rule2);
+
+            log.info("=IF(F"+i+"='Admin')");
+            log.info("=IF(F"+i+"='User')");
         }
     }
 
