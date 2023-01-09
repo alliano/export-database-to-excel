@@ -2,6 +2,7 @@ package com.export.controllers;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +21,18 @@ public class UserController {
     private final UserServices userServices;
 
     @GetMapping(path = "/all")
-    private List<UserDetailDto> findAList(){
-        return this.userServices.exportToExcelDetailUser();
+    private ResponseEntity<List<UserDetailDto>> findAList(){
+        return this.userServices.findAllUserDetail();
     }
 
     @GetMapping(path = "/create/{size}")
-    private void generateFakeUser(@PathVariable(name = "size") int size) {
-        this.userServices.generateFakeUser(size);
+    private ResponseEntity<Void> generateFakeUser(@PathVariable(name = "size") int size) {
+        return this.userServices.generateFakeUser(size);
+    }
+
+    @GetMapping(path = "/exportDetailUser")
+    private ResponseEntity<?> exportDetailUser(){
+        return this.userServices.exportToExcelDetailUser();
     }
 
 }
