@@ -69,7 +69,6 @@ public class WriteExcel {
         XSSFSheet sheet = (this.workbook.getSheet("user details") == null ? this.workbook.createSheet("user details") : this.workbook.getSheet("user details"));
         SheetConditionalFormatting sheetCF = sheet.getSheetConditionalFormatting();
         for (int i = 0; i < users.size(); i++) {
-
             /*
              * buat baris dan kolom sesuai dengan data yang ingin di export
              * dalam case ini bentuk data yang akan di export sebagai berikut
@@ -119,23 +118,24 @@ public class WriteExcel {
                 cell5.setCellValue(users.get(i).getRoleNaname());
                 cell6.setCellValue(users.get(i).getRoleDescription());
             }
-            ConditionalFormattingRule rule1 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=Admin)");
-            ConditionalFormattingRule rule2 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=User)");
-            PatternFormatting fill1 = rule1.createPatternFormatting();
-            fill1.setFillBackgroundColor(IndexedColors.AQUA.index);
-            fill1.setFillPattern(PatternFormatting.BIG_SPOTS);
-            PatternFormatting fill2 = rule2.createPatternFormatting();
-            fill2.setFillBackgroundColor(IndexedColors.LIGHT_YELLOW.index);
-            fill2.setFillPattern(PatternFormatting.BIG_SPOTS);
-            CellRangeAddress[] regions = {
-                CellRangeAddress.valueOf("B1:G1")
-            };
-            sheetCF.addConditionalFormatting(regions, rule1);
-            sheetCF.addConditionalFormatting(regions, rule2);
 
-            log.info("=IF(F"+i+"='Admin')");
-            log.info("=IF(F"+i+"='User')");
+        ConditionalFormattingRule rule1 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=\"Admin\")");
+        PatternFormatting fill1 = rule1.createPatternFormatting();
+        fill1.setFillBackgroundColor(IndexedColors.AQUA.index);
+        fill1.setFillPattern(PatternFormatting.BIG_SPOTS);
+        ConditionalFormattingRule rule2 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=\"User\")");
+        PatternFormatting fill2 = rule2.createPatternFormatting();
+        fill2.setFillBackgroundColor(IndexedColors.LIGHT_YELLOW.index);
+        fill2.setFillPattern(PatternFormatting.BIG_SPOTS);
+
+        CellRangeAddress[] region = {
+            CellRangeAddress.valueOf("F"+(i == 0 ? i+1:i+0)+":"+"G"+(i == 0 ? i+1:i+0))
+        };
+        sheetCF.addConditionalFormatting(region, rule1);
+        sheetCF.addConditionalFormatting(region, rule2);
+        log.info("B"+(i == 0 ? i+1:i+0)+":"+"G"+(i == 0 ? i+1:i+0));
         }
+
     }
 
     // method ini digunakan untuk menulis file excel nya
