@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
@@ -118,7 +120,6 @@ public class WriteExcel {
                 cell5.setCellValue(users.get(i).getRoleNaname());
                 cell6.setCellValue(users.get(i).getRoleDescription());
             }
-
         ConditionalFormattingRule rule1 = sheetCF.createConditionalFormattingRule("=IF(F"+i+"=\"Admin\")");
         PatternFormatting fill1 = rule1.createPatternFormatting();
         fill1.setFillBackgroundColor(IndexedColors.AQUA.index);
@@ -133,17 +134,15 @@ public class WriteExcel {
         };
         sheetCF.addConditionalFormatting(region, rule1);
         sheetCF.addConditionalFormatting(region, rule2);
-        log.info("B"+(i == 0 ? i+1:i+0)+":"+"G"+(i == 0 ? i+1:i+0));
         }
 
     }
 
-    // method ini digunakan untuk menulis file excel nya
     public void execute() throws IOException {
-        FileOutputStream fileOutput = new FileOutputStream(new File("test.xlsx"));
+        FileOutputStream fileOutput = new FileOutputStream(new File(UUID.randomUUID().toString()+".xlsx"));
         this.workbook.write(fileOutput);
         fileOutput.close();
-        this.workbook.close();
+        // this.workbook.close();
         log.info("success export -:)");
     }
 }
