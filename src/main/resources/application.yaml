@@ -15,6 +15,7 @@ spring:
             idle-timeout: 600000
             max-lifetime: 180000
             maximum-pool-size: 10
+
     jpa:
         database: postgresql
         hibernate:
