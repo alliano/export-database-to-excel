@@ -2,17 +2,20 @@ package com.export.services;
 
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hibernate.QueryException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.export.domains.entities.User;
 import com.export.domains.repositories.UserRepositories;
 import com.export.dtos.UserDetailDto;
 import com.export.helper.DataFaker;
+import com.export.helper.ExcelToDatabase;
 import com.export.helper.WriteExcel;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +29,8 @@ public class UserServices {
     private final UserRepositories userRepo;
 
     private final WriteExcel writeExcelFile;
+
+    private final ExcelToDatabase extd;
 
     /**
      * method ini digunakan untuk mengenerate user palsu beserta role nya
@@ -71,6 +76,10 @@ public class UserServices {
             IOX.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+    }
+
+    public void test(MultipartFile file) throws SQLException, IOException{
+        this.extd.createSchema(file);
     }
 
 }
