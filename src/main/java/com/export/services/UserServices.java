@@ -79,7 +79,7 @@ public class UserServices {
     }
 
     public void test(MultipartFile file) throws SQLException, IOException{
-        this.extd.createSchema(file);
+        this.extd.execute(file);
     }
 
 }
