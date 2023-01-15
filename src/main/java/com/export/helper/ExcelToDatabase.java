@@ -3,18 +3,15 @@ package com.export.helper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.sql.SQLException;
 
 import org.apache.poi.openxml4j.util.ZipSecureFile;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.export.dtos.TableDto;
 import com.export.utils.ConvertFile;
 import com.export.utils.ExecuteXlsx;
 
@@ -29,33 +26,32 @@ public class ExcelToDatabase {
         this.executeXlsx = executeXlsx;
     }
 
-
-
-    public void execute(MultipartFile excelFile) throws IOException {
-        File file = ConvertFile.convert(excelFile);
-        FileInputStream inputStrem = new FileInputStream(file);
-        ZipSecureFile.setMinInflateRatio(0);
-        this.workbook = new XSSFWorkbook(inputStrem);
-
-        XSSFSheet sheet = this.workbook.getSheetAt(0);
-        Iterator<Row> rowIterator = sheet.iterator();
-            List<String> header = new ArrayList<>();
-            Row headerRow = rowIterator.next();
-
-            List<List<String>> datas = new ArrayList<List<String>>();
-            headerRow.forEach(h -> header.add(h.getStringCellValue()));
-            rowIterator.forEachRemaining(r -> {
-                List<String> dataList = new ArrayList<String>();
-                Iterator<Cell> cellIterator =  r.iterator();
-                cellIterator.forEachRemaining(c -> {
-                dataList.add(c.getStringCellValue());
-                });
-                datas.add(dataList);
-            });
-
-            datas.removeIf(data -> data.isEmpty());
-            this.executeXlsx.batchInsert();
+    public void execute(MultipartFile excelFile) {
+        try {
+            //convert file dari Object MultipartFile menjadi File
+            File file = ConvertFile.convert(excelFile);
+            FileInputStream inputStrem = new FileInputStream(file);
+            // untuk meng meng izinkan jika data excel nya sangat banayak
+            ZipSecureFile.setMinInflateRatio(0);
+            this.workbook = new XSSFWorkbook(inputStrem);
+            // ambil sheet pertama
+            XSSFSheet sheet = this.workbook.getSheetAt(0);
+            // pisahkan tabel header dengan body nya
+            TableDto table = this.executeXlsx.sperate(sheet);
+            // buat schema database nya
+            this.executeXlsx.createSchema(table.getHeader());
+            // insert semua data kedalam database
+            this.executeXlsx.batchInsert(table.getBody());
+            // hapus file uploadnya karna sudah tidak digunakan
             file.delete();
+        } catch (IOException IOX) {
+            IOX.printStackTrace();
+            throw new RuntimeException(IOX.getMessage(), IOX.getCause());
+        } catch (SQLException SQLEX) {
+            SQLEX.printStackTrace();
+            throw new RuntimeException(SQLEX.getMessage(), SQLEX.getCause());
+        }
+
     }
 
 
