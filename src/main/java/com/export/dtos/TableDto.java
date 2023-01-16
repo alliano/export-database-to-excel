@@ -1,5 +1,6 @@
 package com.export.dtos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.export.utils.DataType;
@@ -14,5 +15,9 @@ public class TableDto {
 
     private List<List<String>> body;
 
-    private List<DataType> dataType;
+    private List<DataType> dataType = new ArrayList<>();
+
+    public void addDataType(DataType dataType){
+        this.dataType.add(dataType);
+    }
 }
