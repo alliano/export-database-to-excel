@@ -1,5 +1,5 @@
 package com.export.utils;
 
 public enum DataType {
-   STRING, INTEGER
+   STRING, INTEGER, BOLLEAN
 }
