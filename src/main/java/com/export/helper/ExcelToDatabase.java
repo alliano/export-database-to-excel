@@ -41,11 +41,9 @@ public class ExcelToDatabase {
             // buat schema database nya
             this.executeXlsx.createSchema(table.getHeader(), table.getDataType(), sheet.getSheetName());
             // insert semua data kedalam database
-            this.executeXlsx.batchInsert(table.getBody());
+            this.executeXlsx.batchInsert(table.getBody(), sheet.getSheetName(), table.getHeader());
             // hapus file uploadnya karna sudah tidak digunakan
-            if(file.exists()){
-                file.delete();
-            }
+            if(file.exists()) file.delete();
         } catch (IOException IOX) {
             IOX.printStackTrace();
             throw new RuntimeException(IOX.getMessage(), IOX.getCause());
