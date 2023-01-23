@@ -142,7 +142,6 @@ public class WriteExcel {
         FileOutputStream fileOutput = new FileOutputStream(new File(UUID.randomUUID().toString()+".xlsx"));
         this.workbook.write(fileOutput);
         fileOutput.close();
-        // this.workbook.close();
         log.info("success export -:)");
     }
 }
