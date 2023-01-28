@@ -21,6 +21,7 @@ public class ConvertFile {
             outputStrem.close();
             log.info("success write file");
         } catch (IOException IOX) {
+            covertFile.delete();
             covertFile = null;
             throw new RuntimeException(IOX.getMessage());
         }

@@ -2,6 +2,7 @@ package com.export.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -35,14 +36,17 @@ public class SqlUtil {
                 prepareStmt.add(" ".concat(tableHeader.get(i).concat(" BOOLEAN NOT NULL")));
             }
         }
-        if(!prepareStmt.contains("id")) prepareStmt.add(1, "id SERIAL NOT NULL PRIMARY KEY ");
-        else
-        prepareStmt.stream().map( d -> {
-            if(d == "id") {
-                d.concat("SERIAL NOT NULL PRIMARY KEY ");
-            }
-            return d;
-        });
+        if(!prepareStmt.contains("id")) {
+            prepareStmt.add(1, "id SERIAL NOT NULL PRIMARY KEY ");
+        }
+        else {
+            prepareStmt.stream().map( d -> {
+                if(d == "id") {
+                    d.concat("SERIAL NOT NULL PRIMARY KEY ");
+                }
+                return d;
+            });
+        }
         return prepareStmt.toString().replaceAll("[\\[\\]]", "").replaceFirst(",", "").concat(");");
     }
 
@@ -50,11 +54,21 @@ public class SqlUtil {
         String dml = "";
         for (List<String> list : bodyOfTable) {
             list = list.stream().map( d -> {
-               if(Pattern.compile("(true|false)",Pattern.CASE_INSENSITIVE).matcher(d).matches()){
+               if(Pattern.compile("(true|false)",Pattern.CASE_INSENSITIVE).matcher(d).find(0)){
                     return d;
                 }
-                else if(Pattern.compile("^[0-9]+$").matcher(d).matches()){
+                else if(Pattern.compile("^[0-9]+$").matcher(d).find(0)){
                     return d;
+                }
+                else if(Pattern.compile("[^\\s,\\.\\(\\)]'[^\\s,\\.\\(\\)]").matcher(d).find(0)){
+                     Matcher matcher = Pattern.compile("[^\\s,\\.\\(\\)]'[^\\s,\\.\\(\\)]").matcher(d);
+                     String strReplacement = new String();
+                     if(matcher.find(0)){
+                            String fristword = d.replaceAll("'", "");
+                            String group = matcher.group(0).replaceAll("'", "''");
+                            strReplacement = fristword+group;
+                     }
+                     return "\'"+strReplacement+"\'";
                 }
                 else {
                     try {
@@ -68,7 +82,8 @@ public class SqlUtil {
             String data = list.toString().replaceAll("[\\[]", "(").replaceAll("[\\]]", "),");
             dml = dml.concat(data);
         }
-        return "INSERT INTO ".concat(entityName).concat(FormatterString.toSnakeCase(tableHeader).toString().replaceAll("[\\[]", "(")
+        return "INSERT INTO ".concat(entityName)
+        .concat(FormatterString.toSnakeCase(tableHeader).toString().replaceAll("[\\[]", "(")
         .replaceAll("[\\]]", ")")).concat(" VALUES")
         .concat(dml.replaceAll("[^a-zA-Z0-9@\\(\\)\\.\\s]$", ";"));
     }

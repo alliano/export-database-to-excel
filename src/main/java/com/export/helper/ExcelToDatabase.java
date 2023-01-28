@@ -33,6 +33,7 @@ public class ExcelToDatabase {
             FileInputStream inputStrem = new FileInputStream(file);
             // untuk meng meng izinkan jika data excel nya sangat banayak
             ZipSecureFile.setMinInflateRatio(0);
+
             this.workbook = new XSSFWorkbook(inputStrem);
             // ambil sheet pertama
             XSSFSheet sheet = this.workbook.getSheetAt(0);
@@ -44,12 +45,10 @@ public class ExcelToDatabase {
             this.executeXlsx.batchInsert(table.getBody(), sheet.getSheetName(), table.getHeader());
             // hapus file uploadnya karna sudah tidak digunakan
             if(file.exists()) file.delete();
-        } catch (IOException IOX) {
+        }
+        catch (IOException IOX) {
             IOX.printStackTrace();
             throw new RuntimeException(IOX.getMessage(), IOX.getCause());
-        } catch (SQLException SQLEX) {
-            SQLEX.printStackTrace();
-            throw new RuntimeException(SQLEX.getMessage(), SQLEX.getCause());
         }
 
     }

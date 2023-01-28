@@ -17,8 +17,9 @@ import org.springframework.context.annotation.Configuration;
 import com.export.dtos.TableDto;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @Configuration @AllArgsConstructor
 public class ExecuteXlsx {
 
@@ -26,13 +27,19 @@ public class ExecuteXlsx {
 
     private final SqlUtil sqlUtil;
 
-    public void createSchema(List<String> tableHeader, List<DataType> dataType, String tableName) throws SQLException{
-        Connection connection = dataSource.getConnection();
-        Statement statement = connection.createStatement();
-        String ddl = this.sqlUtil.ddlBuilder(tableHeader, dataType, tableName);
-        statement.execute(ddl);
-        connection.close();
-        statement.close();
+    public void createSchema(List<String> tableHeader, List<DataType> dataType, String tableName) {
+        try {
+            Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            String ddl = this.sqlUtil.ddlBuilder(tableHeader, dataType, tableName);
+            System.out.println(ddl);
+            statement.execute(ddl);
+            connection.close();
+            statement.close();
+            log.info("Success create a schema");
+        } catch (SQLException SQLEX) {
+            log.info("entity Exist");
+        }
     }
 
     public TableDto sperate(XSSFSheet sheet){
