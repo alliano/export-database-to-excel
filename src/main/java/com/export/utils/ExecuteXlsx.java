@@ -27,6 +27,7 @@ public class ExecuteXlsx {
 
     private final SqlUtil sqlUtil;
 
+    // method ini untuk membuat schema atau entity secara otomatis
     public void createSchema(List<String> tableHeader, List<DataType> dataType, String tableName) {
         try {
             Connection connection = dataSource.getConnection();
@@ -42,6 +43,7 @@ public class ExecuteXlsx {
         }
     }
 
+    // method ini digunakan utuk memisahkan tabel header dengan body nya
     public TableDto sperate(XSSFSheet sheet){
         Iterator<Row> rowIterator = sheet.iterator();
         List<String> header = new ArrayList<>();
@@ -93,9 +95,9 @@ public class ExecuteXlsx {
         return table;
     }
 
+    // method ini digunakan untuk betch insert untuk data excel
     public void batchInsert(List<List<String>> bodyOfTable, String entityName, List<String> tableHeader) {
         String data = this.sqlUtil.batchInsert(bodyOfTable, entityName, tableHeader);
-        System.out.println(data);
         try {
             this.dataSource.getConnection().createStatement().executeUpdate(data);
         } catch (SQLException SQLEX) {

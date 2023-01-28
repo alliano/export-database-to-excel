@@ -40,9 +40,9 @@ public class UserController {
         return this.userServices.exportToExcelDetailUser();
     }
 
-    @PostMapping(path = "/test")
-    public void test(@RequestParam(name = "file") MultipartFile file) throws SQLException, IOException{
-        this.userServices.test(file);
+    @PostMapping(path = "/insert")
+    public void insert(@RequestParam(name = "file") MultipartFile file) throws SQLException, IOException{
+        this.userServices.insert(file);
     }
 
 }

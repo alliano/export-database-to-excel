@@ -8,9 +8,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * kelas ini unuk membuat ddl dan dml secara otomatis
+ */
+
 @Configuration
 public class SqlUtil {
 
+    // method ini digunakan utuk mengenerate query untk membuat tabel
     public String ddlBuilder(List<String> tableHeader, List<DataType> dataType, String tableName){
         tableHeader.removeIf(d -> d.isEmpty() || d.equalsIgnoreCase("id"));
         tableName = FormatterString.toSnakeCase(tableName);
@@ -18,6 +23,7 @@ public class SqlUtil {
         List<String> prepareStmt = new ArrayList<String>();
         prepareStmt.add("CREATE TABLE ".concat(tableName).concat("("));
         for (int i = 0; i < tableHeader.size(); i++) {
+            // untuk tipe data yang lainya seperti Date dll belum di handel sepenuh nya
             if(dataType.get(i) == DataType.STRING) {
                 if(tableHeader.get(i).matches("^description")||tableHeader.get(i).matches("[a-zA-Z_]+description*")) {
                     prepareStmt.add(" ".concat(tableHeader.get(i).concat(" VARCHAR(500)")));
@@ -50,6 +56,7 @@ public class SqlUtil {
         return prepareStmt.toString().replaceAll("[\\[\\]]", "").replaceFirst(",", "").concat(");");
     }
 
+    // method ini untuk mengenerate query batch insert
     public String batchInsert(List<List<String>> bodyOfTable, String entityName, List<String> tableHeader) {
         String dml = "";
         for (List<String> list : bodyOfTable) {

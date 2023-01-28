@@ -20,6 +20,17 @@ public class FormatterString {
         return listString;
     }
 
+    public static String toCamelCase(String listString) {
+        String arrayStr[] = listString.split(" ");
+        listString = Arrays.asList(arrayStr).stream().reduce( ( first, last ) -> {
+            char firstCharacter = last.charAt(0);
+            String charToStrUppercase = Character.toString(firstCharacter).toUpperCase();
+            String replace = last.replace(Character.toString(firstCharacter), charToStrUppercase);
+            return first.concat(replace);
+        }).get();
+        return listString;
+    }
+
     public static List<String> toSnakeCase(List<String> listString) {
         listString = listString.stream().map( dl -> {
             String[] replaceSpace = dl.split(" ");

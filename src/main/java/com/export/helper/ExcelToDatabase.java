@@ -3,7 +3,6 @@ package com.export.helper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -52,9 +51,4 @@ public class ExcelToDatabase {
         }
 
     }
-
-
-
-
-
 }

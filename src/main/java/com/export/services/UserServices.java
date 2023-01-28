@@ -78,7 +78,7 @@ public class UserServices {
         }
     }
 
-    public void test(MultipartFile file) throws SQLException, IOException{
+    public void insert(MultipartFile file) throws SQLException, IOException{
         this.extd.execute(file);
     }
 
